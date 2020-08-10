@@ -1,0 +1,42 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://productListUser:productListPassword@dbcluster-shard-00-01.zgfwd.mongodb.net:27017,dbcluster-shard-00-00.zgfwd.mongodb.net:27017,dbcluster-shard-00-02.zgfwd.mongodb.net:27017/test?ssl=true&replicaSet=atlas-69mbhz-shard-0&authSource=admin&retryWrites=true
+  application:
+    name: wallmart-api-sell
+
+endpoints:
+  health:
+    enabled: yes
+  shutdown:
+    enabled: yes
+
+server:
+  servlet:
+    context-path: /api/walmart/v1
+
+management:
+  context-path: /admin
+  server:
+    add-application-context-header: false
+    endpoints:
+      web:
+        base-path: /private
+      enabled: false
+      health:
+        enabled: true
+        path: /health
+        sensitive: false
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          client: DEBUG
+
+strategyOperationById:
+  lengthSearchedProduct: 3
+
+strategyOperationByDescriptionAndBrand:
+  lengthSearchedProduct: 4

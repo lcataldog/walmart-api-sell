@@ -1,0 +1,20 @@
+docker-integration-test:
+	docker run --rm -v ${PWD}:/usr/src/api \
+           -w /usr/src/api \
+	       openjdk:8 ./gradlew cleanIntegrationTest integrationTest
+
+docker-unit-test:
+	docker run --rm -v ${PWD}:/usr/src/api \
+	        -w /usr/src/api \
+	        openjdk:8 ./gradlew unitTest
+
+docker-assemble:
+	docker run --rm -v ${PWD}:/usr/src/api \
+	       -w /usr/src/api \
+	       openjdk:8 ./gradlew assemble
+
+docker-build-runner: docker-assemble
+	docker build -t build/libs/walmart-api-sell.jar -f ci/docker/Dockerfile.runner .
+
+docker-run: docker-build-runner
+	docker run --name api --rm -p 8080:8080 -p 5005:5005 build/libs/walmart-api-sell.jar

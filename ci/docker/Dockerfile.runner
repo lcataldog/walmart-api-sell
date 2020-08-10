@@ -1,0 +1,15 @@
+FROM gradle:4.3.0-jdk8-alpine
+
+MAINTAINER Luis Cataldo "lcataldo@gmail.com"
+
+# Default to UTF-8 file.encoding
+ENV LANG C.UTF-8
+
+EXPOSE 8080
+
+COPY build/libs/*.jar /api/app.jar
+RUN ls /api
+
+WORKDIR /api
+
+ENTRYPOINT exec java -Xms64m -Xmx1024m -jar app.jar

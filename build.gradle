@@ -1,0 +1,139 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.4.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+    id 'idea'
+    id 'eclipse'
+}
+
+group = 'com.walmart'
+version = '0.0.1-SNAPSHOT'
+
+configurations {
+    customProvidedRuntime
+}
+
+apply plugin: 'application'
+mainClassName = 'com.walmart.api.sell.Application'
+
+repositories {
+	mavenCentral()
+}
+
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+	compile("io.springfox:springfox-swagger-common:2.9.2") {
+		exclude group: 'net.bytebuddy', module: 'byte-buddy'
+	}
+    compile "io.rest-assured:json-path:3.0.5"
+
+    testCompile("org.springframework.boot:spring-boot-starter-test:2.1.4.RELEASE") {
+        exclude group: 'junit', module: 'junit'
+        exclude group: 'net.bytebuddy', module: 'byte-buddy'
+    }
+
+    testCompile("org.junit.jupiter:junit-jupiter:5.4.2")
+    testCompile('org.mockito:mockito-junit-jupiter:2.23.4')
+    compile("net.bytebuddy:byte-buddy:1.9.12")
+
+    compile('org.projectlombok:lombok:1.16.18')
+
+    compile("com.github.tomakehurst:wiremock:2.20.0") {
+        exclude group: 'junit', module: 'junit'
+    }
+
+    testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.5'
+    testCompile group: "de.flapdoodle.embed", name: "de.flapdoodle.embed.mongo", version: "2.2.0"
+
+}
+
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
+}
+
+processResources {
+    expand(project.properties)
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.3'
+}
+
+tasks.withType(JavaCompile){
+    options.warnings = true
+}
+
+task updateDependencies(type: Copy) {
+	from sourceSets.test.runtimeClasspath
+	into 'testCompile/'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+sourceSets {
+    unitTest {
+        java {
+            srcDir 'src/test/unitTest/java'
+        }
+        resources {
+            srcDir 'src/test/unitTest/resources'
+        }
+        compileClasspath += sourceSets.main.runtimeClasspath
+        compileClasspath += sourceSets.test.compileClasspath
+        runtimeClasspath = output + compileClasspath
+    }
+    integrationTest {
+        java {
+            srcDir 'src/test/integrationTest/java'
+        }
+        resources {
+            srcDir 'src/test/integrationTest/resources'
+        }
+        compileClasspath += sourceSets.main.runtimeClasspath
+        compileClasspath += sourceSets.test.compileClasspath
+        runtimeClasspath = output + compileClasspath
+    }
+}
+
+task unitTest(type: Test){
+    useJUnitPlatform()
+    description = "Runs Unit Tests"
+    testClassesDirs = sourceSets.unitTest.output.classesDirs
+    classpath = sourceSets.unitTest.runtimeClasspath
+}
+
+task integrationTest(type: Test){
+    useJUnitPlatform()
+    description = "Runs Integration Tests"
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    configure {
+        systemProperties = [
+                'spring.profiles.active': 'int'
+        ]
+    }
+}
+
+tasks.withType(Test){
+    testLogging {
+        exceptionFormat "full"
+        events "passed", "failed", "skipped"
+    }
+}
