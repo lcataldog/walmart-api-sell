@@ -8,6 +8,7 @@ spring:
 server:
   servlet:
     context-path: /api/walmart/v1
+  port: ${PORT:5000}
 
 management:
   context-path: /admin
