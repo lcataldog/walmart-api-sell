@@ -35,6 +35,14 @@ dependencies {
 	}
     compile "io.rest-assured:json-path:3.0.5"
 
+    compile('org.projectlombok:lombok:1.16.18')
+
+    compile("com.github.tomakehurst:wiremock:2.20.0") {
+        exclude group: 'junit', module: 'junit'
+    }
+
+    compile("net.bytebuddy:byte-buddy:1.9.12")
+
     testCompile("org.springframework.boot:spring-boot-starter-test:2.1.4.RELEASE") {
         exclude group: 'junit', module: 'junit'
         exclude group: 'net.bytebuddy', module: 'byte-buddy'
@@ -42,14 +50,6 @@ dependencies {
 
     testCompile("org.junit.jupiter:junit-jupiter:5.4.2")
     testCompile('org.mockito:mockito-junit-jupiter:2.23.4')
-    compile("net.bytebuddy:byte-buddy:1.9.12")
-
-    compile('org.projectlombok:lombok:1.16.18')
-
-    compile("com.github.tomakehurst:wiremock:2.20.0") {
-        exclude group: 'junit', module: 'junit'
-    }
-
     testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.5'
     testCompile group: "de.flapdoodle.embed", name: "de.flapdoodle.embed.mongo", version: "2.2.0"
 

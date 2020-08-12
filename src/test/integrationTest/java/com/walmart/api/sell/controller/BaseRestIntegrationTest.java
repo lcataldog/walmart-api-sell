@@ -8,7 +8,6 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ContextConfiguration;
@@ -17,7 +16,6 @@ import static io.restassured.RestAssured.given;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @AutoConfigureDataMongo
-@AutoConfigureTestEntityManager
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ContextConfiguration(classes=Application.class)
 public class BaseRestIntegrationTest {
